@@ -9,3 +9,12 @@ body, html {
   width: 100%;
   height: 100%;
 }
+@keyframes success-to-error {
+  0% {
+    
+  }
+}
+.color-ani {
+  animation-fill-mode: forward;
+  animation: changeCol 2s ease-in-out;
+}

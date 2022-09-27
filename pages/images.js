@@ -10,36 +10,34 @@ import React, { useState, useEffect } from 'react';
 var inter;
 export default function Images(props) {
     const imgArray = [img1, img2, img3, img4, img5, img6, img7];
-    //The use state hook provides state in functional components, forcing the DOM to
-    //Rerender when I call setCurrImg. 
+    //The use state hook provides state in functional components, forcing the DOM to Rerender when I call setCurrImg. 
     const [currImg, setCurrImg] = useState(0);
-    //UseEffect is a clean way of running code at mount and running code at demount. Effectively,
-    //On render I am calling setInterval, and at derender I am caling clearInterval.
-    useEffect(_ => {
-    inter = setInterval(_ => {
-        var selection = Math.round(Math.random()*6);
-        setCurrImg(selection);
-    }, 3000)
-    return () => {clearInterval(inter)};    
-}, []);
-    //This useEffect watches for currImg changing and runs checkImg on change. If it's the first image,
-    //It will increment times in the parent (setter passed by props.)
+    //This useEffect watches for currImg changing and runs checkImg on change. If it's the first image, It will increment times in the parent (setter passed by props.)
     useEffect(_ => {
         checkImg(currImg);
     }, [currImg]);
+    //UseEffect is a clean way of running code at mount and running code at demount. Effectively, On render I am calling setInterval, and at derender I am caling clearInterval. If triggered 
+    //Changes, then I will recall the use effect.
+    useEffect(_ => {
+        if (props.triggered) {
+            inter = setInterval(_ => {
+                var selection = Math.round(Math.random()*6);
+                setCurrImg(selection);
+            }, 3000)
+        } else {
+            clearInterval(inter);
+        }
+    return () => {clearInterval(inter)};
+    }, [props.triggered]);
     function checkImg(val) {
         if (val == 0) {
             props.setTimes(props.times + 1);
         } 
     }
     return (
-        <div>
-            <div>
-                {/*I am using the optimized nextjs image component as opposed to the img tag. It acts very similarly, but offers lazy loading 
-                and caches more efficiently. Represented by a span in the dom.*/}
+        <div className="flex">
+                {/*I am using the optimized nextjs image component as opposed to the img tag. It acts very similarly, but offers lazy loading and caches more efficiently. Represented by a span in the dom.*/}
                 <Image src={imgArray[currImg].src} alt="Image of an animal" width={500} height={500}/>
-            </div>
-            <button className="btn btn-primary mx-auto w-full" onClick={() => clearInterval(inter)}>Stop Animation</button>
         </div>
     )
    
